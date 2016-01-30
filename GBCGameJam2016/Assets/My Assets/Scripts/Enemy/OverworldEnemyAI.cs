@@ -8,17 +8,32 @@ public class OverworldEnemyAI : MonoBehaviour {
     public float walkTimeMin = 3.0f;
     public float walkTimeMax = 6.0f;
 
+    public bool canFollowPlayer = false;
+    public float followDistance = 1.5f;
+
     private bool isIdle = true;
     private bool waiting = false;
+
+    private PlayerController _player;
+    private Collider2D _collider;
 
 	// Use this for initialization
 	void Start () {
         StartCoroutine(WalkAndWait());
+        _player = FindObjectOfType<PlayerController>();
+        _collider = GetComponentInChildren<Collider2D>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Move();
+        if (!canFollowPlayer)
+        {
+            Move();
+        }
+        else
+        {
+            FollowPlayer();
+        }
 	}
 
     private void Move()
@@ -87,6 +102,16 @@ public class OverworldEnemyAI : MonoBehaviour {
             yield return new WaitForSeconds(waitTime);
             waiting = false;
             StartCoroutine(WalkAndWait());
+        }
+    }
+
+    private void FollowPlayer()
+    {
+        Vector2 direction = _player.transform.position - transform.position;
+        _collider.isTrigger = true;
+        if (direction.magnitude > followDistance)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, _player.transform.position, Mathf.Abs(speed) * Time.deltaTime);
         }
     }
 }

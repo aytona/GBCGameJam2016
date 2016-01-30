@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
 	/// <summary>
 	/// Array of bools to check if the player has each power
 	/// </summary>
+    [SerializeField]
 	private bool[] powers;
 
 	/// <summary>
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour
 	void FixedUpdate()
 	{
 		BasicMovement (Vector2.right * Input.GetAxis("Horizontal"));
+        PowerMovement();
 	}
 
 	void Update()
@@ -184,8 +186,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && powers [0] && jumpCount < 1)
-			rb2d.AddForce (Vector2.up * jumpForce);
+        if (Input.GetKeyDown(KeyCode.Space) && powers[0] && jumpCount < 1)
+        {
+            rb2d.AddForce(Vector2.up * jumpForce);
+            jumpCount++;
+        }
 	}
 
 	/// <summary>
@@ -245,7 +250,7 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
 		{
 			currentState = PlayerState.Flying;
-			transform.position = new Vector2(0, 1);
+            transform.position = Vector2.up;//new Vector2(0, 1);
 			rb2d.gravityScale = 0;
 		}
 		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying && isOnGround) 

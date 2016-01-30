@@ -7,11 +7,11 @@ public class OverworldEnemyBobbing : MonoBehaviour {
 
     void Update()
     {
-        if (transform.position.y > maxY)
+        if (transform.localPosition.y >= maxY)
         {
             bobSpeed = Mathf.Abs(bobSpeed) * -1;
         }
-        else if (transform.position.y < minY)
+        else if (transform.localPosition.y <= minY)
         {
             bobSpeed = Mathf.Abs(bobSpeed);
         }
