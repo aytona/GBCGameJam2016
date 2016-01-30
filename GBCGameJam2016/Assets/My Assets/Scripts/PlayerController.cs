@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviour
 			Walk (direction);
 			Jump ();
 		}
+		OrientPlayer ();
 	}
 
 	/// <summary>
@@ -161,6 +162,14 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	private void OrientPlayer()
+	{
+		if (Input.GetAxis ("Horizontal") < 0)
+			transform.localScale = Vector2.one;
+		if (Input.GetAxis ("Horizontal") > 0)
+			transform.localScale = Vector2.left + Vector2.up;
+	}
+
 	#endregion Basic Movement Methods
 
 	#region Power Movement Methods
@@ -172,11 +181,11 @@ public class PlayerController : MonoBehaviour
 	{
 		if (powers[0])
 			DoubleJump ();
-		if (powers [1])
+		if (powers[1])
 			Teleport ();
-		if (powers [2])
+		if (powers[2])
 			PhaseMode ();
-		if (powers [3])
+		if (powers[3])
 		{
 			FlyMode ();
 			if (currentState == PlayerState.Flying)
@@ -212,7 +221,7 @@ public class PlayerController : MonoBehaviour
 		}
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			this.transform.position = arrowTip.transform.position;
+			transform.position = arrowTip.transform.position;
 			teleSlider.transform.localScale = Vector2.up;
 		}
 	}
