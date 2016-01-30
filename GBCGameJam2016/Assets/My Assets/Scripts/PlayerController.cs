@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The slider to where the character would teleport to")]
 	public GameObject teleSlider;
 
+	[Tooltip("The arrow tip")]
+	public GameObject arrowTip;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -205,12 +208,12 @@ public class PlayerController : MonoBehaviour
 			if (teleSlider.transform.localScale.x < maxWalkSpeed)
 				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
 			else
-				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 0);
+				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			teleSlider.transform.localScale = Vector2.zero;
-			transform.position = teleSlider.gameObject.GetComponentInChildren<Transform> ().position;
+			this.transform.position = arrowTip.transform.position;
+			teleSlider.transform.localScale = Vector2.up;
 		}
 	}
 
