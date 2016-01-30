@@ -67,6 +67,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private int jumpCount;
 
+	/// <summary>
+	/// The current state of the player
+	/// </summary>
+	private PlayerState currentState;
+
 	#endregion Private Variables
 
 	#region MonoBehaviour
@@ -75,6 +80,7 @@ public class PlayerController : MonoBehaviour
 	{
 		rb2d = GetComponent<Rigidbody2D> ();
 		powers = new bool[numOfPowers];
+		currentState = PlayerState.Normal;
 	}
 
 	void FixedUpdate()
@@ -96,8 +102,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void BasicMovement(Vector2 direction)
 	{
-		Walk (direction);
-		Jump ();
+		if (currentState == PlayerState.Normal)
+		{
+			Walk (direction);
+			Jump ();
+		}
 	}
 
 	/// <summary>
@@ -128,7 +137,16 @@ public class PlayerController : MonoBehaviour
 		Collider2D collider = Physics2D.OverlapPoint(groundCheck.transform.position);
 		isOnGround = (collider != null);
 		if (isOnGround)
+		{
 			jumpCount = 0;
+			if (currentState == PlayerState.Flying)
+			{
+				if (Input.GetAxis ("Vertical") < 0)
+				{
+					currentState = PlayerState.Normal;
+				}
+			}
+		}
 	}
 
 	#endregion Basic Movement Methods
@@ -149,13 +167,13 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && powers [0] && jumpCount < 2)
+		if (Input.GetKeyDown (KeyCode.Space) && powers [0] && jumpCount < 1)
 			rb2d.AddForce (Vector2.up * jumpForce);
 	}
 
 	/// <summary>
 	/// Power index of 1
-	/// Teleports the player towards the mouse
+	/// Teleports the player towards the targeted spot
 	/// </summary>
 	private void Teleport()
 	{
@@ -177,7 +195,18 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Fly()
 	{
+		
+	}
 
+	/// <summary>
+	/// Initialize fly mode and deactivates it
+	/// </summary>
+	private void FlyMode()
+	{
+		if (Input.GetAxis ("Vertical") > 0)
+		{
+
+		}
 	}
 	#endregion Power Movement Methods
 }
