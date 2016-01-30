@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("Amount of force for jump")]
 	public float jumpForce;
 
+	[Tooltip("The max length for teleportation")]
+	public float maxTeleLength;
+
 	[Tooltip("The amount of powers there are in total")]
 	public int numOfPowers;
 
@@ -37,6 +40,9 @@ public class PlayerController : MonoBehaviour
 
 	[Tooltip("The object that contains the player sprite")]
 	public GameObject spriteContainer;
+
+	[Tooltip("The slider to where the character would teleport to")]
+	public GameObject teleSlider;
 
 	#endregion Public Variables
 
@@ -67,6 +73,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private int jumpCount;
 
+	/// <summary>
+	/// The current state of the player
+	/// </summary>
+	private PlayerState currentState;
+
 	#endregion Private Variables
 
 	#region MonoBehaviour
@@ -75,6 +86,7 @@ public class PlayerController : MonoBehaviour
 	{
 		rb2d = GetComponent<Rigidbody2D> ();
 		powers = new bool[numOfPowers];
+		currentState = PlayerState.Normal;
 	}
 
 	void FixedUpdate()
@@ -96,8 +108,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void BasicMovement(Vector2 direction)
 	{
-		Walk (direction);
-		Jump ();
+		if (currentState == PlayerState.Normal)
+		{
+			Walk (direction);
+			Jump ();
+		}
 	}
 
 	/// <summary>
@@ -128,7 +143,16 @@ public class PlayerController : MonoBehaviour
 		Collider2D collider = Physics2D.OverlapPoint(groundCheck.transform.position);
 		isOnGround = (collider != null);
 		if (isOnGround)
+		{
 			jumpCount = 0;
+			if (currentState == PlayerState.Flying)
+			{
+				if (Input.GetAxis ("Vertical") < 0)
+				{
+					currentState = PlayerState.Normal;
+				}
+			}
+		}
 	}
 
 	#endregion Basic Movement Methods
@@ -140,7 +164,18 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void PowerMovement()
 	{
-		DoubleJump ();
+		if (powers[0])
+			DoubleJump ();
+		if (powers [1])
+			Teleport ();
+		if (powers [2])
+			PhaseMode ();
+		if (powers [3])
+		{
+			FlyMode ();
+			if (currentState == PlayerState.Flying)
+				Fly ();
+		}
 	}
 
 	/// <summary>
@@ -149,26 +184,47 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && powers [0] && jumpCount < 2)
+		if (Input.GetKeyDown (KeyCode.Space) && powers [0] && jumpCount < 1)
 			rb2d.AddForce (Vector2.up * jumpForce);
 	}
 
 	/// <summary>
 	/// Power index of 1
-	/// Teleports the player towards the mouse
+	/// Teleports the player towards the targeted spot
 	/// </summary>
 	private void Teleport()
 	{
-
+		if (Input.GetKey (KeyCode.E)) 
+		{
+			if (teleSlider.transform.localScale.x < maxWalkSpeed)
+				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
+			else
+				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 0);
+		}
+		if (Input.GetKeyUp(KeyCode.E))
+		{
+			teleSlider.transform.localScale = Vector2.zero;
+			transform.position = teleSlider.gameObject.GetComponentInChildren<Transform> ().position;
+		}
 	}
 
 	/// <summary>
-	/// Power index of 2
-	/// Makes the player enter or exit phase
+	/// Power Index of 2
+	/// Initialize phase mode and deactivates it
 	/// </summary>
-	private void Phase()
+	private void PhaseMode()
 	{
-
+		if (Input.GetKeyDown (KeyCode.Q))
+		{
+			if (currentState == PlayerState.Normal) {
+				currentState = PlayerState.Phase;
+				Physics2D.IgnoreLayerCollision (0, 8, true);
+			} else if (currentState == PlayerState.Phase)
+			{
+				currentState = PlayerState.Normal;
+				Physics2D.IgnoreLayerCollision (0, 8, false);
+			}
+		}
 	}
 
 	/// <summary>
@@ -177,7 +233,26 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Fly()
 	{
+		if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+			transform.Translate (Input.GetAxis ("Horizontal") * walkSpeed * Time.deltaTime, Input.GetAxis ("Vertical") * walkSpeed * Time.deltaTime, 0);
+	}
 
+	/// <summary>
+	/// Initialize fly mode and deactivates it
+	/// </summary>
+	private void FlyMode()
+	{
+		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
+		{
+			currentState = PlayerState.Flying;
+			transform.position = new Vector2(0, 1);
+			rb2d.gravityScale = 0;
+		}
+		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying && isOnGround) 
+		{
+			currentState = PlayerState.Normal;
+			rb2d.gravityScale = 1;
+		}
 	}
 	#endregion Power Movement Methods
 }
