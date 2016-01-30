@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The speed cap of the player")]
 	public float maxWalkSpeed;
 
+	[Tooltip("Amount of force for jump")]
+	public float jumpForce;
+
 	[Tooltip("The ground check object")]
 	public Transform groundCheck;
 
@@ -25,7 +28,7 @@ public class PlayerController : MonoBehaviour
 	/// <summary>
 	/// Checker to see if the player is on the ground
 	/// </summary>
-	private bool isOnGround;
+	private bool isOnGround = false;
 
 	/// <summary>
 	/// The character's movement direction
@@ -53,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
 	{
-		
+		CheckGround ();
 	}
 
 	#endregion MonoBehaviour
@@ -62,33 +65,16 @@ public class PlayerController : MonoBehaviour
 
 	#endregion Public Methods
 
-	#region Private Methods
+	#region Basic Movement Methods
 
 	/// <summary>
 	/// Checks the input of the player to set the character Orientaton and movement.
 	/// </summary>
 	private void CheckInput(Vector2 direction)
 	{
-		//OrientateCharacter (direction);
 		Walk (direction);
+		Jump ();
 	}
-
-	/// <summary>
-	/// Orientates the character towards the direction they are goign to.
-	/// </summary>
-//	private void OrientateCharacter(Vector2 direction)
-//	{
-//		Vector3 spriteScale = spriteContainer.transform.localScale;
-//		if (direction.x > 0)
-//		{
-//			spriteScale.x = 1;
-//		}
-//		else if (direction.x < 0)
-//		{
-//			spriteScale.x = -1;
-//		}
-//		spriteContainer.transform.localScale = spriteScale; 
-//	}
 
 	/// <summary>
 	/// Walk to the specified direction.
@@ -101,6 +87,15 @@ public class PlayerController : MonoBehaviour
 			transform.Translate (direction * Time.deltaTime * walkSpeed);
 	}
 
+	private void Jump()
+	{
+		if (Input.GetKeyDown (KeyCode.Space) && isOnGround) 
+		{
+			Debug.Log ("Jump");
+			rb2d.AddForce (Vector2.up * jumpForce);
+		}
+	}
+
 	/// <summary>
 	/// Checks if the groundCheck collides with the ground
 	/// </summary>
@@ -110,5 +105,5 @@ public class PlayerController : MonoBehaviour
 		isOnGround = (collider != null);
 	}
 
-	#endregion Private Methods
+	#endregion Basic Movement Methods
 }
