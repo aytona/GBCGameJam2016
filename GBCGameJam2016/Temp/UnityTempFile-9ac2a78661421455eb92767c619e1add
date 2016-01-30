@@ -82,5 +82,8 @@
 'Assets/My Assets/Scripts/Enemy/OverworldEnemyBobbing.cs'
 'Assets/My Assets/Scripts/Enemy/OverworldEnemyDetector.cs'
 'Assets/My Assets/Scripts/PlayerController.cs'
+'Assets/My Assets/Scripts/RPGPlayer.cs'
+'Assets/My Assets/Scripts/RPGStats.cs'
+'Assets/My Assets/Scripts/SmoothFollow2D.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Xml.Linq.dll'
