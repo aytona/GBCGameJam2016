@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
 	void Update()
 	{
 		CheckGround ();
+		Debug.Log (currentState);
 	}
 
 	#endregion MonoBehaviour
@@ -247,16 +248,17 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void FlyMode()
 	{
+		Vector2 currentPosition = transform.position;
 		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
 		{
 			currentState = PlayerState.Flying;
-            transform.position = Vector2.up;//new Vector2(0, 1);
+			transform.position = new Vector2(currentPosition.x, currentPosition.y + 0.1f);
 			rb2d.gravityScale = 0;
 		}
-		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying && isOnGround) 
+		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying) 
 		{
-			currentState = PlayerState.Normal;
 			rb2d.gravityScale = 1;
+			currentState = PlayerState.Normal;
 		}
 	}
 	#endregion Power Movement Methods
