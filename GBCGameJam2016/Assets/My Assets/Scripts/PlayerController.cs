@@ -251,6 +251,7 @@ public class PlayerController : MonoBehaviour
 		Vector2 currentPosition = transform.position;
 		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
 		{
+			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
 			transform.position = new Vector2(currentPosition.x, currentPosition.y + 0.1f);
 			rb2d.gravityScale = 0;
