@@ -2,8 +2,10 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
+	#region Variables
+
 	/// <summary>
 	/// The animator reference.
 	/// </summary>
@@ -15,77 +17,28 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private GameObject spriteContainer = null;
 
 	/// <summary>
-	/// The walk force applied to the character when walking.
+	/// The walk speed.
 	/// </summary>
-	[SerializeField] private float walkForce = 10f;	
+	public float walkSpeed;
 
 	/// <summary>
-	/// The max walk speed enforced for the character.
+	/// The walk speed cap.
 	/// </summary>
-	[SerializeField] private float maxWalkSpeed = 4f;
+	public float walkSpeedCap;
 
 	/// <summary>
 	/// The character's movement direction.
 	/// </summary>
 	[SerializeField] private Vector2 direction = Vector2.zero;
 
-	/// <summary>
-	/// The bomb prefab.
-	/// </summary>
-	[SerializeField] private GameObject bombPrefab = null;
-
-	/// <summary>
-	/// The bomb count.
-	/// </summary>
-	[SerializeField] private int bombCount = 0;
-
-	/// <summary>
-	/// The transform of where the bomb will spawn.
-	/// </summary>
-	[SerializeField] private Transform bombSpawn = null;
+	#endregion Variables
 
 	#region MonoBehaviour
-
-	void FixedUpdate ()
-	{
-		OrientCharacter(this.direction);
-		Walk(this.direction);
-	}
 
 	void Update ()
 	{
 		ProcessInput();
-	}
-
-	void OnTriggerEnter2D (Collider2D other)
-	{
-		if (other.CompareTag("MovingPlatform"))
-		{
-			this.transform.parent = other.transform;
-		}
-
-		if (other.CompareTag("FirePit"))
-		{
-			Death();
-		}
-
-		if (other.gameObject.tag == "Door") {
-			Application.LoadLevel("MainMenu");
-		}
-
-		if (other.gameObject.tag == "BombCrate")
-		{
-			bombCount = 5;
-			Data.Instance.Bomb = 5;
-		}
-	}
-
-	void OnTriggerExit2D (Collider2D other)
-	{
-		if (other.CompareTag("MovingPlatform"))
-		{
-			this.transform.parent = null;
-		}
+		//OrientCharacter(direction);
 	}
 
 	#endregion MonoBehaviour
@@ -96,7 +49,6 @@ public class CharacterController : MonoBehaviour
 	private void ProcessInput ()
 	{
 		ProcessWalking();
-		ProcessBomb();
 	}
 
 	/// <summary>
@@ -104,28 +56,9 @@ public class CharacterController : MonoBehaviour
 	/// </summary>
 	private void ProcessWalking ()
 	{
-		this.direction = Vector2.zero;
-
-		if (Input.GetKey(KeyCode.LeftArrow))
-		{
-			this.direction += new Vector2(-1, 0);
-		}
-		if (Input.GetKey(KeyCode.RightArrow))
-		{
-			this.direction += new Vector2(1, 0);
-		}
-	}
-
-	private void ProcessBomb ()
-	{
-		if (Input.GetKeyDown (KeyCode.B) && bombCount > 0)
-		{
-			GameObject bomb = Instantiate(this.bombPrefab) as GameObject;
-			bomb.transform.position = this.bombSpawn.transform.position;
-			bomb.transform.rotation = this.bombSpawn.transform.rotation;
-			bombCount--;
-			Data.Instance.Bomb--;
-		}
+		float translation = Input.GetAxis ("Horizontal") * walkSpeed;
+		translation *= Time.deltaTime;
+		transform.Translate (Vector2.right);
 	}
 
 	#endregion Input
@@ -137,9 +70,9 @@ public class CharacterController : MonoBehaviour
 	/// Orients the character horizontally left or right based on the provided direction.
 	/// </summary>
 	/// <param name="direction">Direction.</param>
-	private void OrientCharacter  (Vector2 direction)
+	/*private void OrientCharacter  (Vector2 direction)
 	{
-		Vector3 spriteScale = this.spriteContainer.transform.localScale;
+		Vector3 spriteScale = spriteContainer.transform.localScale;
 		if (direction.x > 0)
 		{
 			// Positive horizontal scale for the character.
@@ -150,38 +83,16 @@ public class CharacterController : MonoBehaviour
 			// Negative horizontal scale for the character.
 			spriteScale.x = Mathf.Abs(spriteScale.x) * -1;
 		}
-		this.spriteContainer.transform.localScale = spriteScale; 
-	}
-
-	/// <summary>
-	/// Moves the player in the specified direction via physics forces.
-	/// </summary>
-	/// <param name="direction">Direction.</param>
-	private void Walk (Vector2 direction)
-	{
-		this.GetComponent<Rigidbody2D>().AddForce(direction * this.walkForce);
-		float horizontalSpeed = Mathf.Abs(this.GetComponent<Rigidbody2D>().velocity.x);
-
-		if (Mathf.Abs(horizontalSpeed) > this.maxWalkSpeed)
-		{
-			Vector2 newVelocity = this.GetComponent<Rigidbody2D>().velocity;
-			float multiplier = (this.GetComponent<Rigidbody2D>().velocity.x > 0) ? 1 : -1;
-
-			// Limit the character's speed to maxWalkSpeed.
-			newVelocity.x = this.maxWalkSpeed * multiplier;
-			this.GetComponent<Rigidbody2D>().velocity = newVelocity;
-		}
-
-		this.animator.SetFloat("HorizontalSpeed", horizontalSpeed);
-	}
+		spriteContainer.transform.localScale = spriteScale; 
+	}*/
 
 	private void Death ()
 	{
 		// Play the death animation.
-		this.animator.SetTrigger("Death");
+		// animator.SetTrigger("Death");
 
 		// Disable this script to prevent further movement.
-		this.enabled = false;
+		enabled = false;
 	}
 	#endregion Activities
 }
