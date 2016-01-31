@@ -14,20 +14,41 @@ public class RPGEnemy : MonoBehaviour {
 
     public Stats enemyStats;
 
+    public int currentHP;
+
     public int minLevel, maxLevel;
 
     public int currentLevel;
 
+    public string[] enemyAttacks;
+
 	// Use this for initialization
 	void Start () {
         SetStats();
+        
 	}
 
     private void SetStats()
     {
+        currentLevel = Random.Range(minLevel, maxLevel);
         enemyStats.HP = Random.Range(minBaseHP, maxBaseHP) * currentLevel;
         enemyStats.speed = Random.Range(minBaseSpeed, maxBaseSpeed) * currentLevel;
         enemyStats.attack = Random.Range(minBaseAttack, maxBaseAttack) * currentLevel;
         enemyStats.defence = Random.Range(minBaseDefence, maxBaseDefence) * currentLevel;
+        currentHP = enemyStats.HP;
+    }
+
+    public void SetHP(int inc)
+    {
+        currentHP += inc;
+        if (currentHP > enemyStats.HP)
+        {
+            currentHP = enemyStats.HP;
+        }
+        else if (currentHP <= 0)
+        {
+            currentHP = 0;
+            //DEAD
+        }
     }
 }
