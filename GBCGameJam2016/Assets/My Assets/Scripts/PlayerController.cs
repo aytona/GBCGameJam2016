@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
 
 	private void Jump()
 	{
-		if (Input.GetKeyDown (KeyCode.JoystickButton1) && isOnGround) 
+		if (Input.GetKeyDown (KeyCode.JoystickButton0) && isOnGround) 
 		{
 			rb2d.AddForce (Vector2.up * jumpForce);
 			jumpCount++;
@@ -255,7 +255,7 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-        if (Input.GetKeyDown(KeyCode.JoystickButton1) && powers[0] && jumpCount < 1)
+        if (Input.GetKeyDown(KeyCode.JoystickButton0) && powers[0] && jumpCount < 1)
         {
 			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
@@ -269,14 +269,14 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Teleport()
 	{
-		if (Input.GetKey (KeyCode.JoystickButton2)) 
+		if (Input.GetKey (KeyCode.JoystickButton1)) 
 		{
 			if (teleSlider.transform.localScale.x < maxTeleLength)
 				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
 			else if (teleSlider.transform.localScale.x >= maxTeleLength)
 				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
-		if (Input.GetKeyUp(KeyCode.JoystickButton2))
+		if (Input.GetKeyUp(KeyCode.JoystickButton1))
 		{
 			transform.position = arrowTip.transform.position;
 			teleSlider.transform.localScale = Vector2.up;
@@ -325,7 +325,7 @@ public class PlayerController : MonoBehaviour
 	private void FlyMode()
 	{
 		Vector2 currentPosition = transform.position;
-		if (Input.GetKeyDown(KeyCode.JoystickButton11) && currentState == PlayerState.Normal)
+		if (Input.GetKeyDown(KeyCode.JoystickButton9) && currentState == PlayerState.Normal)
 		{
 			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour
 			rb2d.gravityScale = 0;
 			anims.SetBool("Flying", true);
 		}
-		if (Input.GetKeyDown(KeyCode.JoystickButton11) && currentState == PlayerState.Flying) 
+		if (Input.GetKeyDown(KeyCode.JoystickButton9) && currentState == PlayerState.Flying) 
 		{
 			rb2d.gravityScale = 1;
 			currentState = PlayerState.Normal;
