@@ -5,9 +5,8 @@ using System.Collections.Generic;
 public class RPGAttackDictionary{
     public Dictionary<string, int> attacks;
 
-    void Awake()
+    public RPGAttackDictionary()
     {
-        attacks = new Dictionary<string,int>();
         attacks.Add("Hit", 5);
         attacks.Add("Stab", 10);
         attacks.Add("Slash", 15);

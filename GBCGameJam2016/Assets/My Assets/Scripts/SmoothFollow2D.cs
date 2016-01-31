@@ -8,6 +8,8 @@ public class SmoothFollow2D : MonoBehaviour
 	
 	// How much damping occurs when the target moves.
 	public float MovementDamping = 1.0f;
+
+    public float minX, maxX, minY, maxY;
 	
 	void LateUpdate ()
 	{
@@ -29,6 +31,10 @@ public class SmoothFollow2D : MonoBehaviour
 		// Restore camera's z value.
 		// We want the camera to remain a fixed distance away from the x-y plane.
 		currentPosition.z = cameraZ;
+
+        currentPosition.x = Mathf.Clamp(currentPosition.x, minX, maxX);
+
+        currentPosition.y = Mathf.Clamp(currentPosition.y, minY, maxY);
 		
 		// Update the current position with the smoothed position towards the target object.
 		this.transform.position = currentPosition;
