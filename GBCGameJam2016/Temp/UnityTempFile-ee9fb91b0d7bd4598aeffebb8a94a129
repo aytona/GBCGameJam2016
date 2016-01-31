@@ -1,13 +1,13 @@
 -debug
 -target:library
--nowarn:0169
--out:'Temp/Assembly-CSharp.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
--r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll'
--r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
--r:'/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll'
--r:'/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll'
+-i:UnityEngine
+-i:System.Collections
+-base:UnityEngine.MonoBehaviour
+-nowarn:BCW0016
+-nowarn:BCW0003
+-method:Main
+-out:Temp/Assembly-UnityScript.dll
+-x-type-inference-rule-attribute:UnityEngineInternal.TypeInferenceRuleAttribute
 -define:UNITY_5_3_1
 -define:UNITY_5_3
 -define:UNITY_5
@@ -78,19 +78,15 @@
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_64
 -define:UNITY_EDITOR_OSX
-'Assets/My Assets/Scripts/Enemy/OverworldEnemyAI.cs'
-'Assets/My Assets/Scripts/Enemy/OverworldEnemyBobbing.cs'
-'Assets/My Assets/Scripts/Enemy/OverworldEnemyDetector.cs'
-'Assets/My Assets/Scripts/PhaseFilter.cs'
-'Assets/My Assets/Scripts/PlayerController.cs'
-'Assets/My Assets/Scripts/PlayerDetectBattle.cs'
-'Assets/My Assets/Scripts/RPGAttackDictionary.cs'
-'Assets/My Assets/Scripts/RPGAttacks.cs'
-'Assets/My Assets/Scripts/RPGBattle.cs'
-'Assets/My Assets/Scripts/RPGController.cs'
-'Assets/My Assets/Scripts/RPGEnemy.cs'
-'Assets/My Assets/Scripts/RPGPlayer.cs'
-'Assets/My Assets/Scripts/RPGStats.cs'
-'Assets/My Assets/Scripts/SmoothFollow2D.cs'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Xml.Linq.dll'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
+-r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll'
+-r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
+-r:'/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll'
+-r:'/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll'
+-i:UnityEditor
+'Assets/Tazo_fx/Script/Red_UVScroller.js'
+'Assets/Tazo_fx/Script/Red_destroyThisTimed.js'
+'Assets/Tazo_fx/Script/Red_randomRotation.js'
+'Assets/Tazo_fx/Script/Red_rotateThis.js'
+'Assets/Tazo_fx/Script/Red_trailFade.js'
