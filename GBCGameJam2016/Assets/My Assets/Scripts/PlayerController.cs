@@ -75,6 +75,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private int jumpCount;
 
+	/// <summary>
+	/// The anims of the player
+	/// </summary>
+	private Animator anims;
+
 	#endregion Private Variables
 
 	#region MonoBehaviour
@@ -84,6 +89,7 @@ public class PlayerController : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D> ();
 		powers = new bool[numOfPowers];
 		currentState = PlayerState.Normal;
+		anims = GetComponentInChildren<Animator>();
 	}
 
 	void FixedUpdate()
@@ -102,7 +108,12 @@ public class PlayerController : MonoBehaviour
 	{
 		if (other.CompareTag("Interactable"))
 		{
-			
+			if (Input.GetKeyDown(KeyCode.F))
+			{
+				// TODO: Store items into altar
+				string name = other.name;
+
+			}
 		}
 	}
 	#endregion MonoBehaviour
@@ -281,4 +292,19 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 	#endregion Power Movement Methods
+
+	#region Player Anims
+
+	private void PlayerAnims()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+			jumpAnim();
+	}
+
+	private void jumpAnim()
+	{
+		anims.SetTrigger("Jump_Forward");
+	}
+
+	#endregion Player Anims
 }
