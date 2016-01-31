@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The slider to where the character would teleport to")]
 	public GameObject teleSlider;
 
+	[Tooltip("The arrow tip")]
+	public GameObject arrowTip;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -99,6 +102,7 @@ public class PlayerController : MonoBehaviour
 	void Update()
 	{
 		CheckGround ();
+		Debug.Log (currentState);
 	}
 
 	#endregion MonoBehaviour
@@ -204,12 +208,12 @@ public class PlayerController : MonoBehaviour
 			if (teleSlider.transform.localScale.x < maxWalkSpeed)
 				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
 			else
-				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 0);
+				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			teleSlider.transform.localScale = Vector2.zero;
-			transform.position = teleSlider.gameObject.GetComponentInChildren<Transform> ().position;
+			this.transform.position = arrowTip.transform.position;
+			teleSlider.transform.localScale = Vector2.up;
 		}
 	}
 
@@ -247,16 +251,18 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void FlyMode()
 	{
+		Vector2 currentPosition = transform.position;
 		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
 		{
+			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
-            transform.position = Vector2.up;//new Vector2(0, 1);
+			transform.position = new Vector2(currentPosition.x, currentPosition.y + 0.1f);
 			rb2d.gravityScale = 0;
 		}
-		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying && isOnGround) 
+		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying) 
 		{
-			currentState = PlayerState.Normal;
 			rb2d.gravityScale = 1;
+			currentState = PlayerState.Normal;
 		}
 	}
 	#endregion Power Movement Methods
