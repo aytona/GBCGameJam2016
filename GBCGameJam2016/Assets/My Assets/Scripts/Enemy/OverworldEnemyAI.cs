@@ -11,17 +11,25 @@ public class OverworldEnemyAI : MonoBehaviour {
     public bool canFollowPlayer = false;
     public float followDistance = 1.5f;
 
+    public int hitsNeeded;
+    private int currentHits;
+
+    public GameObject drop;
+
     private bool isIdle = true;
     private bool waiting = false;
 
     private PlayerController _player;
     private Collider2D _collider;
 
+    private Vector3 deltaPosition;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(WalkAndWait());
         _player = FindObjectOfType<PlayerController>();
         _collider = GetComponentInChildren<Collider2D>();
+        currentHits = hitsNeeded;
 	}
 	
 	// Update is called once per frame
@@ -34,6 +42,17 @@ public class OverworldEnemyAI : MonoBehaviour {
         {
             FollowPlayer();
         }
+        if (deltaPosition.x - transform.position.x < 0)
+        {
+            transform.localScale = Vector2.left + Vector2.up;
+        }
+        else
+        {
+            transform.localScale = Vector2.right + Vector2.up;
+        }
+
+        deltaPosition = transform.position;
+        
 	}
 
     private void Move()
@@ -112,6 +131,16 @@ public class OverworldEnemyAI : MonoBehaviour {
         if (direction.magnitude > followDistance)
         {
             transform.position = Vector2.MoveTowards(transform.position, _player.transform.position, Mathf.Abs(speed) * Time.deltaTime);
+        }
+    }
+
+    public void HitEnemy()
+    {
+        currentHits--;
+        Instantiate(drop, this.transform.position, Quaternion.identity);
+        if (currentHits <= 0)
+        {
+            Destroy(this.GetComponentInParent<OverworldEnemyDetector>().gameObject);
         }
     }
 }
