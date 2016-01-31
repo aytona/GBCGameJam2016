@@ -114,6 +114,7 @@ public class PlayerController : MonoBehaviour
 		PowerMovement ();
 		CheckGround ();
 		WalkingAnim ();
+        Attack();
 		if (onAltar)
 		{
 			if (Input.GetKeyDown (KeyCode.JoystickButton3))
@@ -286,7 +287,7 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-        if (Input.GetKeyDown(KeyCode.JoystickButton0) && (powers[0] || PlayerPrefs.GetInt("Double") && jumpCount < 1)
+        if (Input.GetKeyDown(KeyCode.JoystickButton0) && (powers[0] || PlayerPrefs.GetInt("Double")  > 0 && jumpCount < 1))
         {
 			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
