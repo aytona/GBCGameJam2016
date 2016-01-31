@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The arrow tip")]
 	public GameObject arrowTip;
 
+	[Tooltip("The current state of the player")]
+	public PlayerState currentState;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -76,11 +79,6 @@ public class PlayerController : MonoBehaviour
 	/// The current amount of jumps
 	/// </summary>
 	private int jumpCount;
-
-	/// <summary>
-	/// The current state of the player
-	/// </summary>
-	private PlayerState currentState;
 
 	#endregion Private Variables
 

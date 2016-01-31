@@ -81,6 +81,7 @@
 'Assets/My Assets/Scripts/Enemy/OverworldEnemyAI.cs'
 'Assets/My Assets/Scripts/Enemy/OverworldEnemyBobbing.cs'
 'Assets/My Assets/Scripts/Enemy/OverworldEnemyDetector.cs'
+'Assets/My Assets/Scripts/PhaseFilter.cs'
 'Assets/My Assets/Scripts/PlayerController.cs'
 'Assets/My Assets/Scripts/PlayerDetectBattle.cs'
 'Assets/My Assets/Scripts/RPGAttackDictionary.cs'
