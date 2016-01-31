@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The arrow tip")]
 	public GameObject arrowTip;
 
+	[Tooltip("The current state of the player")]
+	public PlayerState currentState;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -76,11 +79,6 @@ public class PlayerController : MonoBehaviour
 	/// The current amount of jumps
 	/// </summary>
 	private int jumpCount;
-
-	/// <summary>
-	/// The current state of the player
-	/// </summary>
-	private PlayerState currentState;
 
 	#endregion Private Variables
 
@@ -234,14 +232,20 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Q))
 		{
-			if (currentState == PlayerState.Normal) {
+			if (currentState == PlayerState.Normal)
+			{
 				currentState = PlayerState.Phase;
 				Physics2D.IgnoreLayerCollision (0, 8, true);
-			} else if (currentState == PlayerState.Phase)
+			} 
+			else if (currentState == PlayerState.Phase)
 			{
 				currentState = PlayerState.Normal;
 				Physics2D.IgnoreLayerCollision (0, 8, false);
 			}
+		}
+		if (currentState == PlayerState.Phase)
+		{
+			Walk (Vector2.right * Input.GetAxis ("Horizontal"));
 		}
 	}
 
