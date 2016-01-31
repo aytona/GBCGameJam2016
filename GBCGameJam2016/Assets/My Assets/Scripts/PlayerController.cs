@@ -47,11 +47,17 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The arrow tip")]
 	public GameObject arrowTip;
 
+	[Tooltip("Sword gameobject")]
+	public GameObject sword;
+
 	[Tooltip("The current state of the player")]
 	public PlayerState currentState;
 
 	[Tooltip("Inventory of the player")]
 	public int mats;
+
+	[Tooltip("The array of powers")]
+	public bool[] powers;
 
 	#endregion Public Variables
 
@@ -62,11 +68,6 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private bool isOnGround = false;
 
-	/// <summary>
-	/// Array of bools to check if the player has each power
-	/// </summary>
-    [SerializeField]
-	private bool[] powers;
 
 	/// <summary>
 	/// Reference to the rigidbody
@@ -92,6 +93,8 @@ public class PlayerController : MonoBehaviour
 	/// The name of the altar
 	/// </summary>
 	private string altarName = "";
+
+	private int _health = 20;
 
 	#endregion Private Variables
 
@@ -128,12 +131,25 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter2D(Collider2D other)
+	void OnTriggerEnter2D (Collider2D other)
 	{
-		if (other.tag == "Interactable")
-		{
+		if (other.tag == "Interactable") {
 			altarName = other.name;
 			onAltar = true;
+		}
+		if (other.tag == "Enemy") 
+		{
+			if (_health > 0) 
+			{
+				anims.SetTrigger ("TakeDamage");
+				_health--;
+			}
+			else 
+			{
+				anims.SetTrigger("Death");
+				GetComponent<BoxCollider2D>().enabled = false;
+				rb2d.IsSleeping();
+			}
 		}
 	}
 
@@ -161,6 +177,19 @@ public class PlayerController : MonoBehaviour
 			Jump ();
 		}
 		OrientPlayer ();
+	}
+
+	private void Attack()
+	{
+		if (Input.GetKeyDown(KeyCode.JoystickButton2))
+		{
+			sword.GetComponent<BoxCollider2D>().enabled = true;
+			anims.SetTrigger("Attack");
+		}
+		if (Input.GetKeyUp(KeyCode.JoystickButton2))
+		{
+			sword.GetComponent<BoxCollider2D>().enabled = false;
+		}
 	}
 
 	/// <summary>
@@ -237,13 +266,13 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void PowerMovement()
 	{
-		if (powers[0])
+		if (powers[0] || PlayerPrefs.GetInt("Double") > 0)
 			DoubleJump ();
-		if (powers[1])
+		if (powers[1] || PlayerPrefs.GetInt("Teleport") > 0)
 			Teleport ();
-		if (powers[2])
+		if (powers[2] || PlayerPrefs.GetInt("Phase") > 0)
 			PhaseMode ();
-		if (powers[3])
+		if (powers[3] || PlayerPrefs.GetInt("Fly") > 0)
 		{
 			FlyMode ();
 			if (currentState == PlayerState.Flying)
@@ -257,7 +286,7 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-        if (Input.GetKeyDown(KeyCode.JoystickButton0) && powers[0] && jumpCount < 1)
+        if (Input.GetKeyDown(KeyCode.JoystickButton0) && (powers[0] || PlayerPrefs.GetInt("Double") && jumpCount < 1)
         {
 			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
