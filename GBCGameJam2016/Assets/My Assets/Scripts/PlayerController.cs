@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -106,6 +107,26 @@ public class PlayerController : MonoBehaviour
 		powers = new bool[numOfPowers];
 		currentState = PlayerState.Normal;
 		anims = GetComponentInChildren<Animator>();
+
+	}
+
+	void OnLevelWasLoaded (int level)
+	{
+		mats = PlayerPrefs.GetInt ("mats");
+		if (level == 1) {
+			if (PlayerPrefs.GetInt ("HUDSpawn") == 0)
+			{
+				transform.position = new Vector2 (20f, 4.3f);
+			}
+			if (PlayerPrefs.GetInt("HUDSpawn") == 1)
+			{
+				transform.position = new Vector2(1f, 4.3f);
+			}
+			if (PlayerPrefs.GetInt("HUDSpawn") == 2)
+			{
+				transform.position = new Vector2(-1f, 4.3f);
+			}
+		}
 	}
 
 	void Update ()
@@ -151,6 +172,26 @@ public class PlayerController : MonoBehaviour
 				GetComponent<BoxCollider2D>().enabled = false;
 				rb2d.IsSleeping();
 			}
+		}
+		if (other.tag == "Pickup")
+		{
+			Destroy(other.gameObject);
+			mats++;
+			PlayerPrefs.SetInt("mats", mats);
+		}
+		if (other.tag == "TempleEntrance")
+		{
+			PlayerPrefs.SetInt("HUDSpawn", 1);
+			SceneManager.LoadScene(0);
+		}
+		if (other.tag == "ForestEntrance")
+		{
+			PlayerPrefs.SetInt("HUDSpawn", 2);
+			SceneManager.LoadScene(2);
+		}
+		if (other.tag == "HUDEntrance")
+		{
+			SceneManager.LoadScene(1);
 		}
 	}
 
@@ -285,13 +326,21 @@ public class PlayerController : MonoBehaviour
 	/// Power index of 0
 	/// Makes the character jump while in air
 	/// </summary>
-	private void DoubleJump()
+	private void DoubleJump ()
 	{
+<<<<<<< HEAD
         if (Input.GetKeyDown(KeyCode.JoystickButton0) && (powers[0] || PlayerPrefs.GetInt("Double")  > 0 && jumpCount < 1))
         {
 			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
             jumpCount++;
+=======
+		if (Input.GetKeyDown (KeyCode.JoystickButton0) && (powers [0] || PlayerPrefs.GetInt ("Double") > 0) && jumpCount < 1)
+		{
+			anims.SetTrigger ("Jump");
+			rb2d.AddForce (Vector2.up * jumpForce);
+			jumpCount++;
+>>>>>>> refs/remotes/origin/master
         }
 	}
 
