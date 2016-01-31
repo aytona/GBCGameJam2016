@@ -234,14 +234,20 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Q))
 		{
-			if (currentState == PlayerState.Normal) {
+			if (currentState == PlayerState.Normal)
+			{
 				currentState = PlayerState.Phase;
 				Physics2D.IgnoreLayerCollision (0, 8, true);
-			} else if (currentState == PlayerState.Phase)
+			} 
+			else if (currentState == PlayerState.Phase)
 			{
 				currentState = PlayerState.Normal;
 				Physics2D.IgnoreLayerCollision (0, 8, false);
 			}
+		}
+		if (currentState == PlayerState.Phase)
+		{
+			Walk (Vector2.right * Input.GetAxis ("Horizontal"));
 		}
 	}
 
