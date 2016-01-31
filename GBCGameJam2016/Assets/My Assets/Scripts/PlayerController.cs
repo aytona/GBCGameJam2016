@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The arrow tip")]
 	public GameObject arrowTip;
 
+	[Tooltip("The current state of the player")]
+	public PlayerState currentState;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -63,11 +66,6 @@ public class PlayerController : MonoBehaviour
 	private bool[] powers;
 
 	/// <summary>
-	/// The player's movement direction
-	/// </summary>
-	private Vector2 currentDirection = Vector2.one;
-
-	/// <summary>
 	/// Reference to the rigidbody
 	/// </summary>
 	private Rigidbody2D rb2d;
@@ -78,9 +76,9 @@ public class PlayerController : MonoBehaviour
 	private int jumpCount;
 
 	/// <summary>
-	/// The current state of the player
+	/// The anims of the player
 	/// </summary>
-	private PlayerState currentState;
+	private Animator anims;
 
 	#endregion Private Variables
 
@@ -91,6 +89,7 @@ public class PlayerController : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D> ();
 		powers = new bool[numOfPowers];
 		currentState = PlayerState.Normal;
+		anims = GetComponentInChildren<Animator>();
 	}
 
 	void FixedUpdate()
@@ -105,6 +104,18 @@ public class PlayerController : MonoBehaviour
 		Debug.Log (currentState);
 	}
 
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.CompareTag("Interactable"))
+		{
+			if (Input.GetKeyDown(KeyCode.F))
+			{
+				// TODO: Store items into altar
+				string name = other.name;
+
+			}
+		}
+	}
 	#endregion MonoBehaviour
 
 	#region Basic Movement Methods
@@ -234,14 +245,20 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Q))
 		{
-			if (currentState == PlayerState.Normal) {
+			if (currentState == PlayerState.Normal)
+			{
 				currentState = PlayerState.Phase;
 				Physics2D.IgnoreLayerCollision (0, 8, true);
-			} else if (currentState == PlayerState.Phase)
+			} 
+			else if (currentState == PlayerState.Phase)
 			{
 				currentState = PlayerState.Normal;
 				Physics2D.IgnoreLayerCollision (0, 8, false);
 			}
+		}
+		if (currentState == PlayerState.Phase)
+		{
+			Walk (Vector2.right * Input.GetAxis ("Horizontal"));
 		}
 	}
 
@@ -275,4 +292,19 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 	#endregion Power Movement Methods
+
+	#region Player Anims
+
+	private void PlayerAnims()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+			jumpAnim();
+	}
+
+	private void jumpAnim()
+	{
+		anims.SetTrigger("Jump_Forward");
+	}
+
+	#endregion Player Anims
 }
