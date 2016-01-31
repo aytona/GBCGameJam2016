@@ -66,11 +66,6 @@ public class PlayerController : MonoBehaviour
 	private bool[] powers;
 
 	/// <summary>
-	/// The player's movement direction
-	/// </summary>
-	private Vector2 currentDirection = Vector2.one;
-
-	/// <summary>
 	/// Reference to the rigidbody
 	/// </summary>
 	private Rigidbody2D rb2d;
@@ -103,6 +98,13 @@ public class PlayerController : MonoBehaviour
 		Debug.Log (currentState);
 	}
 
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.CompareTag("Interactable"))
+		{
+			
+		}
+	}
 	#endregion MonoBehaviour
 
 	#region Basic Movement Methods

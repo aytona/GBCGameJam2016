@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class RPGBattle : MonoBehaviour {
 
@@ -18,6 +19,6 @@ public class RPGBattle : MonoBehaviour {
         }
         _enemy = e;
         e.transform.parent = transform;
-        Application.LoadLevel(0);
+        SceneManager.LoadScene(0);
     }
 }

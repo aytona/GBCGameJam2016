@@ -4,11 +4,21 @@ using System.Collections;
 
 public class PhaseFilter : MonoBehaviour {
 
+	#region Public Variables
+
 	public float transitionSpeed;
-	
+
+	#endregion Public Variables
+
+	#region Private Variables
+
 	private PlayerController _player;
 	private RectTransform filterTransform;
 	private float rectSize;
+
+	#endregion Private Variables
+
+	#region MonoBehaviour
 
 	void Awake()
 	{
@@ -28,4 +38,6 @@ public class PhaseFilter : MonoBehaviour {
 		filterTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectSize);
 		filterTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rectSize);
 	}
+
+	#endregion MonoBehaviour
 }
