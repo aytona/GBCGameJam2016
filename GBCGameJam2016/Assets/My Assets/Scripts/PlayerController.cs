@@ -105,16 +105,25 @@ public class PlayerController : MonoBehaviour
 		anims = GetComponentInChildren<Animator>();
 	}
 
-	void Update()
+	void Update ()
 	{
-		BasicMovement (Vector2.right * Input.GetAxis("Horizontal"));
-        PowerMovement();
+		BasicMovement (Vector2.right * Input.GetAxis ("Horizontal"));
+		PowerMovement ();
 		CheckGround ();
+		WalkingAnim ();
 		if (onAltar)
 		{
-			if (Input.GetKeyDown(KeyCode.F))
+			if (Input.GetKeyDown (KeyCode.JoystickButton3))
 			{
-				mats = GameObject.Find(altarName).GetComponent<AltarInventory>().ReceiveMats(mats);
+				if (mats > 0)
+				{
+					anims.SetTrigger ("Interact");
+					mats = GameObject.Find (altarName).GetComponent<AltarInventory> ().ReceiveMats (mats);
+				}
+				else
+				{
+					anims.SetTrigger("Empty");
+				}
 			}
 		}
 	}
@@ -157,21 +166,27 @@ public class PlayerController : MonoBehaviour
 	/// <summary>
 	/// Walk to the specified direction.
 	/// </summary>
-	private void Walk(Vector2 direction)
+	private void Walk (Vector2 direction)
 	{
-		if (Input.GetButton("Fire3"))
+		if (Input.GetKey (KeyCode.JoystickButton5) || Input.GetKey (KeyCode.JoystickButton7))
+		{
 			transform.Translate (direction * Time.deltaTime * maxWalkSpeed);
+			anims.SetBool("Running", true);
+			anims.SetBool("Moving", false);
+		}
 		else
+		{
 			transform.Translate (direction * Time.deltaTime * walkSpeed);
+		}
 	}
 
 	private void Jump()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && isOnGround) 
+		if (Input.GetKeyDown (KeyCode.JoystickButton1) && isOnGround) 
 		{
 			rb2d.AddForce (Vector2.up * jumpForce);
 			jumpCount++;
-			//anims.SetTrigger("Jump");
+			anims.SetTrigger("Jump");
 		}
 	}
 
@@ -185,6 +200,7 @@ public class PlayerController : MonoBehaviour
 		if (isOnGround)
 		{
 			jumpCount = 0;
+			anims.SetBool("Jumping", isOnGround);
 			if (currentState == PlayerState.Flying)
 			{
 				if (Input.GetAxis ("Vertical") < 0)
@@ -192,6 +208,10 @@ public class PlayerController : MonoBehaviour
 					currentState = PlayerState.Normal;
 				}
 			}
+		}
+		else if (!isOnGround)
+		{
+			anims.SetBool("Jumping", isOnGround);
 		}
 	}
 
@@ -235,11 +255,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump()
 	{
-        if (Input.GetKeyDown(KeyCode.Space) && powers[0] && jumpCount < 1)
+        if (Input.GetKeyDown(KeyCode.JoystickButton1) && powers[0] && jumpCount < 1)
         {
+			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
             jumpCount++;
-            anims.SetTrigger("Jump");
         }
 	}
 
@@ -249,14 +269,14 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Teleport()
 	{
-		if (Input.GetKey (KeyCode.E)) 
+		if (Input.GetKey (KeyCode.JoystickButton2)) 
 		{
 			if (teleSlider.transform.localScale.x < maxTeleLength)
 				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
 			else if (teleSlider.transform.localScale.x >= maxTeleLength)
 				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
-		if (Input.GetKeyUp(KeyCode.E))
+		if (Input.GetKeyUp(KeyCode.JoystickButton2))
 		{
 			transform.position = arrowTip.transform.position;
 			teleSlider.transform.localScale = Vector2.up;
@@ -269,7 +289,7 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void PhaseMode()
 	{
-		if (Input.GetKeyDown (KeyCode.Q))
+		if (Input.GetKeyDown (KeyCode.JoystickButton4) || Input.GetKeyDown(KeyCode.JoystickButton6))
 		{
 			if (currentState == PlayerState.Normal)
 			{
@@ -281,6 +301,7 @@ public class PlayerController : MonoBehaviour
 				currentState = PlayerState.Normal;
 				Physics2D.IgnoreLayerCollision (0, 8, false);
 			}
+			anims.SetTrigger("Phase");
 		}
 		if (currentState == PlayerState.Phase)
 		{
@@ -294,8 +315,8 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Fly()
 	{
-		if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-			transform.Translate (Input.GetAxis ("Horizontal") * walkSpeed * Time.deltaTime, Input.GetAxis ("Vertical") * walkSpeed * Time.deltaTime, 0);
+		if (Input.GetAxis("Right X-Axis") != 0 || Input.GetAxis("Right Y-Axis") != 0)
+			transform.Translate (Input.GetAxis ("Right X-Axis") * walkSpeed * Time.deltaTime, Input.GetAxis ("Right Y-Axis") * walkSpeed * Time.deltaTime, 0);
 	}
 
 	/// <summary>
@@ -304,19 +325,32 @@ public class PlayerController : MonoBehaviour
 	private void FlyMode()
 	{
 		Vector2 currentPosition = transform.position;
-		if (Input.GetAxis ("Vertical") > 0 && currentState == PlayerState.Normal)
+		if (Input.GetKeyDown(KeyCode.JoystickButton11) && currentState == PlayerState.Normal)
 		{
 			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
 			transform.position = new Vector2(currentPosition.x, currentPosition.y + 0.1f);
 			rb2d.gravityScale = 0;
+			anims.SetBool("Flying", true);
 		}
-		if (Input.GetAxis ("Vertical") < 0 && currentState == PlayerState.Flying) 
+		if (Input.GetKeyDown(KeyCode.JoystickButton11) && currentState == PlayerState.Flying) 
 		{
 			rb2d.gravityScale = 1;
 			currentState = PlayerState.Normal;
+			anims.SetBool("Flying", false);
 		}
 	}
 	#endregion Power Movement Methods
 
+	#region Anims
+
+	private void WalkingAnim()
+	{
+		if (Input.GetAxis("Horizontal") != 0)
+			anims.SetBool("Moving", true);
+		else
+			anims.SetBool("Moving", false);
+	}
+
+	#endregion Anims
 }

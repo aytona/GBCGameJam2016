@@ -29,7 +29,7 @@ public class PhaseFilter : MonoBehaviour {
 	void Update()
 	{
 		if (_player.currentState == PlayerController.PlayerState.Phase)
-			if (filterTransform.sizeDelta.x < Camera.current.pixelWidth)
+			if (filterTransform.sizeDelta.x < Camera.main.pixelWidth)
 				rectSize += (Time.deltaTime * transitionSpeed);
 		if (_player.currentState != PlayerController.PlayerState.Phase)
 			if (filterTransform.sizeDelta.x > 0)
