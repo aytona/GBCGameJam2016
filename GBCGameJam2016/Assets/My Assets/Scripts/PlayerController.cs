@@ -346,8 +346,8 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Fly()
 	{
-		if (Input.GetAxis("Right X-Axis") != 0 || Input.GetAxis("Right Y-Axis") != 0)
-			transform.Translate (Input.GetAxis ("Right X-Axis") * walkSpeed * Time.deltaTime, Input.GetAxis ("Right Y-Axis") * walkSpeed * Time.deltaTime, 0);
+		if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+			transform.Translate (Input.GetAxis ("Horizontal") * walkSpeed * Time.deltaTime, Input.GetAxis ("Vertical") * walkSpeed * Time.deltaTime, 0);
 	}
 
 	/// <summary>
@@ -356,7 +356,7 @@ public class PlayerController : MonoBehaviour
 	private void FlyMode()
 	{
 		Vector2 currentPosition = transform.position;
-		if (Input.GetKeyDown(KeyCode.JoystickButton6) && currentState == PlayerState.Normal)
+        if (Input.GetAxis("Vertical") > 0 && currentState == PlayerState.Normal)
 		{
 			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
@@ -364,7 +364,7 @@ public class PlayerController : MonoBehaviour
 			rb2d.gravityScale = 0;
 			anims.SetBool("Flying", true);
 		}
-		if (Input.GetKeyDown(KeyCode.JoystickButton6) && currentState == PlayerState.Flying) 
+		if (Input.GetAxis("Vertical") < 0 && currentState == PlayerState.Flying) 
 		{
 			rb2d.gravityScale = 1;
 			currentState = PlayerState.Normal;
@@ -377,7 +377,7 @@ public class PlayerController : MonoBehaviour
 
 	private void WalkingAnim()
 	{
-		if (Input.GetAxis("Horizontal") != 0)
+		if (Input.GetAxis("Horizontal") != 0 && currentState == PlayerState.Normal)
 			anims.SetBool("Moving", true);
 		else
 			anims.SetBool("Moving", false);
