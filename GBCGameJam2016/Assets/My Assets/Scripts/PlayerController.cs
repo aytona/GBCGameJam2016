@@ -50,6 +50,9 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("The current state of the player")]
 	public PlayerState currentState;
 
+	[Tooltip("Inventory of the player")]
+	public int mats;
+
 	#endregion Public Variables
 
 	#region Private Variables
@@ -80,6 +83,16 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private Animator anims;
 
+	/// <summary>
+	/// Trigger to check if player is on an altar
+	/// </summary>
+	private bool onAltar;
+
+	/// <summary>
+	/// The name of the altar
+	/// </summary>
+	private string altarName = "";
+
 	#endregion Private Variables
 
 	#region MonoBehaviour
@@ -92,30 +105,38 @@ public class PlayerController : MonoBehaviour
 		anims = GetComponentInChildren<Animator>();
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
 		BasicMovement (Vector2.right * Input.GetAxis("Horizontal"));
         PowerMovement();
-	}
-
-	void Update()
-	{
 		CheckGround ();
-		Debug.Log (currentState);
-	}
-
-	void OnTriggerStay2D(Collider2D other)
-	{
-		if (other.CompareTag("Interactable"))
+		if (onAltar)
 		{
 			if (Input.GetKeyDown(KeyCode.F))
 			{
-				// TODO: Store items into altar
-				string name = other.name;
-
+				mats = GameObject.Find(altarName).GetComponent<AltarInventory>().ReceiveMats(mats);
 			}
 		}
 	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.tag == "Interactable")
+		{
+			altarName = other.name;
+			onAltar = true;
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.tag == "Interactable")
+		{
+			altarName = "";
+			onAltar = false;
+		}
+	}
+
 	#endregion MonoBehaviour
 
 	#region Basic Movement Methods
@@ -150,6 +171,7 @@ public class PlayerController : MonoBehaviour
 		{
 			rb2d.AddForce (Vector2.up * jumpForce);
 			jumpCount++;
+			//anims.SetTrigger("Jump");
 		}
 	}
 
@@ -173,6 +195,9 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Orients the player to the direction he is going towards to
+	/// </summary>
 	private void OrientPlayer()
 	{
 		if (Input.GetAxis ("Horizontal") < 0)
@@ -214,6 +239,7 @@ public class PlayerController : MonoBehaviour
         {
             rb2d.AddForce(Vector2.up * jumpForce);
             jumpCount++;
+            anims.SetTrigger("Jump");
         }
 	}
 
@@ -293,18 +319,4 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion Power Movement Methods
 
-	#region Player Anims
-
-	private void PlayerAnims()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-			jumpAnim();
-	}
-
-	private void jumpAnim()
-	{
-		anims.SetTrigger("Jump_Forward");
-	}
-
-	#endregion Player Anims
 }
