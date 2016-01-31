@@ -29,14 +29,14 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("Amount of force for jump")]
 	public float jumpForce;
 
-	[Tooltip("The max length for teleportation")]
-	public float maxTeleLength;
-
 	[Tooltip("The amount of powers there are in total")]
 	public int numOfPowers;
 
 	[Tooltip("The ground check object")]
 	public Transform groundCheck;
+
+	[Tooltip("The max length for teleportation")]
+	public float maxTeleLength;
 
 	[Tooltip("The object that contains the player sprite")]
 	public GameObject spriteContainer;
@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviour
 			Walk (direction);
 			Jump ();
 		}
+		OrientPlayer ();
 	}
 
 	/// <summary>
@@ -161,6 +162,14 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	private void OrientPlayer()
+	{
+		if (Input.GetAxis ("Horizontal") < 0)
+			transform.localScale = Vector2.one;
+		if (Input.GetAxis ("Horizontal") > 0)
+			transform.localScale = Vector2.left + Vector2.up;
+	}
+
 	#endregion Basic Movement Methods
 
 	#region Power Movement Methods
@@ -172,11 +181,11 @@ public class PlayerController : MonoBehaviour
 	{
 		if (powers[0])
 			DoubleJump ();
-		if (powers [1])
+		if (powers[1])
 			Teleport ();
-		if (powers [2])
+		if (powers[2])
 			PhaseMode ();
-		if (powers [3])
+		if (powers[3])
 		{
 			FlyMode ();
 			if (currentState == PlayerState.Flying)
@@ -205,14 +214,14 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKey (KeyCode.E)) 
 		{
-			if (teleSlider.transform.localScale.x < maxWalkSpeed)
+			if (teleSlider.transform.localScale.x < maxTeleLength)
 				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
-			else
+			else if (teleSlider.transform.localScale.x >= maxTeleLength)
 				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			this.transform.position = arrowTip.transform.position;
+			transform.position = arrowTip.transform.position;
 			teleSlider.transform.localScale = Vector2.up;
 		}
 	}
