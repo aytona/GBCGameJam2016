@@ -176,6 +176,8 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
+			anims.SetBool("Running", false);
+			anims.SetBool("Moving", true);
 			transform.Translate (direction * Time.deltaTime * walkSpeed);
 		}
 	}
@@ -289,7 +291,7 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void PhaseMode()
 	{
-		if (Input.GetKeyDown (KeyCode.JoystickButton4) || Input.GetKeyDown(KeyCode.JoystickButton6))
+		if (Input.GetKeyDown (KeyCode.JoystickButton4))
 		{
 			if (currentState == PlayerState.Normal)
 			{
@@ -325,7 +327,7 @@ public class PlayerController : MonoBehaviour
 	private void FlyMode()
 	{
 		Vector2 currentPosition = transform.position;
-		if (Input.GetKeyDown(KeyCode.JoystickButton9) && currentState == PlayerState.Normal)
+		if (Input.GetKeyDown(KeyCode.JoystickButton6) && currentState == PlayerState.Normal)
 		{
 			rb2d.velocity = Vector2.zero;
 			currentState = PlayerState.Flying;
@@ -333,7 +335,7 @@ public class PlayerController : MonoBehaviour
 			rb2d.gravityScale = 0;
 			anims.SetBool("Flying", true);
 		}
-		if (Input.GetKeyDown(KeyCode.JoystickButton9) && currentState == PlayerState.Flying) 
+		if (Input.GetKeyDown(KeyCode.JoystickButton6) && currentState == PlayerState.Flying) 
 		{
 			rb2d.gravityScale = 1;
 			currentState = PlayerState.Normal;
