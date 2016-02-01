@@ -52,7 +52,7 @@ public class AltarInventory : MonoBehaviour {
 			leftOver = currentMats + amount - matGoal;
 			currentMats += amount - leftOver;
 		}
-
+        PlayerPrefs.SetInt("mats", leftOver);
 		PlayerPrefs.SetInt(gameObject.name, currentMats);
 		return leftOver;
 	}

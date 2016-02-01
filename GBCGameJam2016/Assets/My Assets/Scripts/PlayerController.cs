@@ -151,12 +151,19 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 		}
+        if (Input.GetKey(KeyCode.Alpha9) && Input.GetKey(KeyCode.Alpha0))
+        {
+            for (int i = 0; i < powers.Length; i++)
+            {
+                powers[i] = true;
+            }
+        }
 	}
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
 		if (other.tag == "Interactable") {
-			altarName = other.name;
+			altarName = other.GetComponentInParent<AltarInventory>().gameObject.name;
 			onAltar = true;
 		}
 		if (other.tag == "Enemy") 
@@ -181,12 +188,12 @@ public class PlayerController : MonoBehaviour
 		}
 		if (other.tag == "TempleEntrance")
 		{
-			PlayerPrefs.SetInt("HUDSpawn", 1);
+			PlayerPrefs.SetInt("HUDSpawn", 2);
 			SceneManager.LoadScene(0);
 		}
 		if (other.tag == "ForestEntrance")
 		{
-			PlayerPrefs.SetInt("HUDSpawn", 2);
+			PlayerPrefs.SetInt("HUDSpawn", 1);
 			SceneManager.LoadScene(2);
 		}
 		if (other.tag == "HUDEntrance")
@@ -328,19 +335,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void DoubleJump ()
 	{
-<<<<<<< HEAD
         if (Input.GetKeyDown(KeyCode.JoystickButton0) && (powers[0] || PlayerPrefs.GetInt("Double")  > 0 && jumpCount < 1))
         {
 			anims.SetTrigger("Jump");
             rb2d.AddForce(Vector2.up * jumpForce);
             jumpCount++;
-=======
-		if (Input.GetKeyDown (KeyCode.JoystickButton0) && (powers [0] || PlayerPrefs.GetInt ("Double") > 0) && jumpCount < 1)
-		{
-			anims.SetTrigger ("Jump");
-			rb2d.AddForce (Vector2.up * jumpForce);
-			jumpCount++;
->>>>>>> refs/remotes/origin/master
         }
 	}
 
@@ -350,14 +349,14 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	private void Teleport()
 	{
-		if (Input.GetKey (KeyCode.JoystickButton1)) 
+		if (Input.GetKey (KeyCode.JoystickButton1) || Input.GetKey(KeyCode.E)) 
 		{
 			if (teleSlider.transform.localScale.x < maxTeleLength)
-				teleSlider.transform.localScale += new Vector3 (0.01f, 0, 0);
+				teleSlider.transform.localScale += new Vector3 (0.06f, 0, 0);
 			else if (teleSlider.transform.localScale.x >= maxTeleLength)
 				teleSlider.transform.localScale = new Vector2 (maxTeleLength, 1);
 		}
-		if (Input.GetKeyUp(KeyCode.JoystickButton1))
+        if (Input.GetKeyUp(KeyCode.JoystickButton1) || Input.GetKeyUp(KeyCode.E))
 		{
 			transform.position = arrowTip.transform.position;
 			teleSlider.transform.localScale = Vector2.up;

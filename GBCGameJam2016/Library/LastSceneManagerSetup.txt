@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/My Assets/Scenes/Area2.unity
+- path: Assets/My Assets/Scenes/AreaHUB.unity
   isLoaded: 1
   isActive: 1
