@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OverworldEnemyAI : MonoBehaviour {
     public Transform leftCheck, rightCheck;
@@ -24,11 +25,14 @@ public class OverworldEnemyAI : MonoBehaviour {
 
     private Vector3 deltaPosition;
 
+    public Image health;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(WalkAndWait());
         _player = FindObjectOfType<PlayerController>();
         _collider = GetComponentInChildren<Collider2D>();
+        hitsNeeded = Random.Range(2, 5);
         currentHits = hitsNeeded;
 	}
 	
@@ -52,8 +56,18 @@ public class OverworldEnemyAI : MonoBehaviour {
         }
 
         deltaPosition = transform.position;
-        
+
+        health.fillAmount = (float)currentHits / (float)hitsNeeded;
 	}
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Sword"))
+        {
+            Debug.Log("Sword");
+            HitEnemy();
+        }
+    }
 
     private void Move()
     {
@@ -137,9 +151,9 @@ public class OverworldEnemyAI : MonoBehaviour {
     public void HitEnemy()
     {
         currentHits--;
-        Instantiate(drop, this.transform.position, Quaternion.identity);
         if (currentHits <= 0)
         {
+            Instantiate(drop, this.transform.position, Quaternion.identity);
             Destroy(this.GetComponentInParent<OverworldEnemyDetector>().gameObject);
         }
     }
